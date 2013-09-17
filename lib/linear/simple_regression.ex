@@ -1,23 +1,23 @@
 # http://en.wikipedia.org/wiki/Simple_linear_regression
 # Exchange.Calc.Regression.run([{1,1},{2,2},{3,3}])
 
-defrecord Math.Regression.Linear.Result, products_avg: nil, x_avg: nil, y_avg: nil, x_sqr_avg: nil do
+defrecord Math.Linear.SimpleRegression.Result, products_avg: nil, x_avg: nil, y_avg: nil, x_sqr_avg: nil do
 
   def complete?(result) do
     result.products_avg && result.x_avg && result.y_avg && result.x_sqr_avg
   end
 end
 
-defmodule Math.Regression.Linear do
+defmodule Math.Linear.SimpleRegression do
 
-  alias Math.Regression.Linear.Result
+  alias Math.Linear.SimpleRegression.Result
 
   @doc """
   Generate a simple linear regression function
 
   ## Examples
 
-    iex> Exchange.Calc.Regression.run([{1,1},{2,2},{4,8}]).(34)
+    iex> Math.Linear.SimpleRegression.run([{1,1},{2,2},{4,8}]).(34)
     80.57142857142864
 
   """
