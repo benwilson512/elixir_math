@@ -100,20 +100,16 @@ defmodule GradientDescentTest do
   # test "lets benchmark run" do
   #   num_points = 1_000_000
   #   base = 1..num_points |> Enum.map &(&1)
-  #   answers = base |> Enum.map &(&1)
-  #   # points = lc x inlist base, do: {1, x, x + 4, x, x, x, x * 10, x, x, x, x /2}
-  #   # thetas = {0,0,0,0,0,0,0,0,0,0}
-  #   points = lc x inlist base, do: {1, x}
-  #   thetas = {0,0}
-  #   alpha = 1/(num_points * num_points)
-  #   tolerance = 0.001
+  #   answers = base |> Enum.map &(&1 * 100)
+  #   points = lc x inlist base, do: {1, x, x, x, x, x}
   #   m = length(points)
+  #   # alpha = 1 / (num_points * num_points * 10)
   #   stuff = [
-  #     thetas, points, answers, alpha, tolerance, m
+  #     points, answers
   #   ]
   #   IO.inspect stuff
   #   # IO.inspect update_thetas(thetas,fun, points, answers, alpha, tolerance, m)
-  #   IO.puts inspect :timer.tc(Math.Regression.GradientDescent, :update_thetas, stuff)
+  #   IO.puts inspect :timer.tc(Math.Regression.GradientDescent, :run, stuff)
   #   assert true
   # end
 

@@ -33,7 +33,10 @@ defmodule Math.Regression.GradientDescent do
     if nil?(alpha) do
       alpha = 1 / :math.pow(m, 2)
     end
-    thetas = hd(points)
+    thetas = 1..size(hd(points))
+      |> Enum.map(&(&1 * 0))
+      |> list_to_tuple
+    IO.inspect thetas
     update_thetas(thetas, points, answers, alpha, tolerance, m)
   end
 
