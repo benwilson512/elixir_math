@@ -6,9 +6,8 @@ defmodule MathTest do
   ]
 
   import Math.Regression.GradientDescent, only: [
-    hypothesis: 2,
-    sum_dc: 5,
-    update_param: 5
+    sum_dc: 6,
+    run: 6
   ]
 
   test "tdot_product can handle a tuple" do
@@ -17,29 +16,41 @@ defmodule MathTest do
     assert t1 |> tdot_product(t2) == (1*2) + (2*3) + (3*4)
   end
 
-  test "hypothesis produces the vector product of 2 vectors" do
-    v1 = {1,2,3,4}
-    v2 = {2,3,4,5}
-    assert hypothesis(v1, v2) == (1*2) + (2*3) + (3*4) + (4*5)
-  end
-
   test "sum_dc sums stuff properly" do
-    parameters = {0,2}
+    fun = fn (params, points) -> params |> tdot_product(points) end
+    params = {0, 2}
     points = [{1,1},{1,2},{1,3}]
     answers = [2,3,4]
     index_j = 0
-    param_j = elem(parameters, index_j)
-    assert sum_dc(param_j, index_j, parameters, points, answers) == 3
+    param_j = elem(params, index_j)
+    assert sum_dc(param_j, index_j, params, fun, points, answers) == 3
   end
 
-  test "update_param works properly" do
-    parameters = {0,2}
-    points = [{1,1},{1,2},{1,3}]
-    answers = [2,3,4]
-    alpha = 1
-    index_j = 0
-    assert update_param(index_j, parameters, points, answers, alpha) == -3
+  test "run works properly" do
+    fun = fn (params, points) -> params |> tdot_product(points) end
+    params = {0,0}
+    points = [{1,1},{1,2},{1,3},{1,4},{1,5}]
+    answers = [2,4,6,8,10]
+    alpha = 0.01
+    tolerance = 0.001
+    assert run(params,fun, points, answers, alpha, tolerance) == {0.18258946721624858, 1.9196782316874186}
   end
 
+  test "lets benchmark run" do
+    fun = fn (params, points) -> params |> tdot_product(points) end
+    num_points = 100
+    answers = 1..num_points |> Enum.map &(&1)
+    points = lc x inlist answers, do: {1, x}
+    params = {0,0}
+    alpha = 0.000001
+    tolerance = 0.001
+    stuff = [
+      params, fun, points, answers, alpha, tolerance
+    ]
+    # IO.inspect stuff
+    # run(params,fun, points, answers, alpha, tolerance)
+    # IO.puts inspect :timer.tc(Math.Regression.GradientDescent, :run, stuff)
+    assert true
+  end
 
 end
