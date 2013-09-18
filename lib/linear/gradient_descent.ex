@@ -25,7 +25,7 @@ defmodule Math.Regression.GradientDescent do
   ## Examples
 
     iex> Math.Regression.GradientDescent.run([{1,1},{1,2},{1,3}], [2,4,6])
-    {1.1387943346486253, 1.486898827903756}
+    {0.6830945381414767, 1.682866297760519}
 
   """
   def run(points, answers, alpha // nil, tolerance // 0.001) do
@@ -67,6 +67,11 @@ defmodule Math.Regression.GradientDescent do
     theta_j - alpha * gradient(theta_j, index_j, thetas, points, answers, m)
   end
 
+
+  @doc """
+    Computes the partial derivative of the cost function
+    with respect to theta_j
+  """
   def gradient(theta_j, index_j, thetas, points, answers, m) do
     gradient(theta_j, index_j, thetas, points, answers, m, 0)
   end

@@ -11,6 +11,8 @@ defmodule GradientDescentTest do
     run: 4
   ]
 
+  doctest Math.Regression.GradientDescent
+
   test "gradient should be zero when theta is exactly right" do
     thetas = {0, 2}
     points = [{1,1},{1,2},{1,3},{1,4}]
