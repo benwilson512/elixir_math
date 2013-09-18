@@ -36,10 +36,15 @@ defmodule Math.Regression.GradientDescent do
     thetas = 1..size(hd(points))
       |> Enum.map(&(&1 * 0))
       |> list_to_tuple
-    update_thetas(thetas, points, answers, alpha, tolerance, m)
+
+    spawn_link(__MODULE__, :update_thetas, [self, thetas, points, answers, alpha, tolerance, m])
+    receive do
+      {:ok, result} -> result
+      {:error, msg} -> msg
+    end
   end
 
-  def update_thetas(thetas, points, answers, alpha, tolerance, m, sdiff // 1.0e300) do
+  def update_thetas(pid, thetas, points, answers, alpha, tolerance, m, sdiff // 1.0e300) do
     new_thetas = 0..(size(thetas) - 1)
       |> Enum.map(&(update_theta(&1, thetas, points, answers, alpha, m)))
       |> list_to_tuple
@@ -47,13 +52,13 @@ defmodule Math.Regression.GradientDescent do
     new_sdiff = squared_diff(new_thetas, thetas)
 
     if new_sdiff > sdiff do
-      raise "Algorithm growing uncontrollably, pick a lower alpha"
+      pid <- {:error, "Algorithm out of control, use a smaller alpha"}
     end
 
     if new_sdiff < tolerance do
-      new_thetas
+      pid <- {:ok, new_thetas}
     else
-      update_thetas(new_thetas, points, answers, alpha, tolerance, m, sdiff)
+      update_thetas(pid, new_thetas, points, answers, alpha, tolerance, m, sdiff)
     end
   end
 

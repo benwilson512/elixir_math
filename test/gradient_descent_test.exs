@@ -1,10 +1,14 @@
+# points = [{1,1},{1,2},{1,3},{1,4},{1,5}]
+# answers = [2,4,6,8,10]
+# Math.Regression.GradientDescent.run(points, answers)
+
 defmodule GradientDescentTest do
   use ExUnit.Case
 
   import Math.Regression.GradientDescent, only: [
     gradient: 6,
     update_theta: 6,
-    update_thetas: 6
+    run: 4
   ]
 
   test "gradient should be zero when theta is exactly right" do
@@ -84,14 +88,12 @@ defmodule GradientDescentTest do
     assert update_theta(index_1, thetas, points, answers, alpha, m) != theta_1
   end
 
-  test "update_theta works properly" do
-    thetas = {0,0}
+  test "run works properly" do
     points = [{1,1},{1,2},{1,3}]
     answers = [2,4,6]
     alpha = 0.1
     tolerance = 0.001
-    m = length(points)
-    assert update_thetas(thetas, points, answers, alpha, tolerance, m) == {0.6809901234567902, 1.6653922633744855}
+    assert run(points, answers, alpha, tolerance) == {0.6809901234567902, 1.6653922633744855}
   end
 
   # test "run handles large numbers" do
