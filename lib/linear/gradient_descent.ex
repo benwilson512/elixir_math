@@ -36,22 +36,24 @@ defmodule Math.Regression.GradientDescent do
     thetas = 1..size(hd(points))
       |> Enum.map(&(&1 * 0))
       |> list_to_tuple
-    IO.inspect thetas
     update_thetas(thetas, points, answers, alpha, tolerance, m)
   end
 
-  def update_thetas(thetas, points, answers, alpha, tolerance, m) do
-    IO.inspect thetas
+  def update_thetas(thetas, points, answers, alpha, tolerance, m, sdiff // 1.0e300) do
     new_thetas = 0..(size(thetas) - 1)
       |> Enum.map(&(update_theta(&1, thetas, points, answers, alpha, m)))
       |> list_to_tuple
     
-    sdiff = squared_diff(new_thetas, thetas)
-    IO.inspect sdiff
-    if sdiff < tolerance do
+    new_sdiff = squared_diff(new_thetas, thetas)
+
+    if new_sdiff > sdiff do
+      raise "Algorithm growing uncontrollably, pick a lower alpha"
+    end
+
+    if new_sdiff < tolerance do
       new_thetas
     else
-      update_thetas(new_thetas, points, answers, alpha, tolerance, m)
+      update_thetas(new_thetas, points, answers, alpha, tolerance, m, sdiff)
     end
   end
 

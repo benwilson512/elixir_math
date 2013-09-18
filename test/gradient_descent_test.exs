@@ -53,7 +53,6 @@ defmodule GradientDescentTest do
   end
 
   test "update_theta should be unchanged for correct thetas" do
-    fun = fn (thetas, points) -> thetas |> Math.tdot_product(points) end
     thetas = {0, 2}
     points = [{1,1},{1,2},{1,3},{1,4}]
     answers = [2,4,6,8]
@@ -70,7 +69,6 @@ defmodule GradientDescentTest do
   end
 
   test "update_theta should change for incorrect thetas" do
-    fun = fn (thetas, points) -> thetas |> Math.tdot_product(points) end
     thetas = {0, 3} #second theta is incorrect
     points = [{1,1},{1,2},{1,3},{1,4},{1,5}]
     answers = [2,4,6,8,10]
@@ -87,7 +85,6 @@ defmodule GradientDescentTest do
   end
 
   test "update_theta works properly" do
-    fun = fn (thetas, points) -> thetas |> Math.tdot_product(points) end
     thetas = {0,0}
     points = [{1,1},{1,2},{1,3}]
     answers = [2,4,6]
@@ -97,17 +94,16 @@ defmodule GradientDescentTest do
     assert update_thetas(thetas, points, answers, alpha, tolerance, m) == {0.6809901234567902, 1.6653922633744855}
   end
 
-  # test "lets benchmark run" do
+  # test "run handles large numbers" do
   #   num_points = 1_000_000
   #   base = 1..num_points |> Enum.map &(&1)
   #   answers = base |> Enum.map &(&1 * 100)
-  #   points = lc x inlist base, do: {1, x, x, x, x, x}
+  #   points = lc x inlist base, do: {1, x}
   #   m = length(points)
   #   # alpha = 1 / (num_points * num_points * 10)
   #   stuff = [
   #     points, answers
   #   ]
-  #   IO.inspect stuff
   #   # IO.inspect update_thetas(thetas,fun, points, answers, alpha, tolerance, m)
   #   IO.puts inspect :timer.tc(Math.Regression.GradientDescent, :run, stuff)
   #   assert true
