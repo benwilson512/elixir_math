@@ -1,38 +1,43 @@
 defmodule Math.Regression.GradientDescent do
 
-  def run(params, fun, points, answers, alpha, tolerance) do
-    new_params = 0..(size(params) - 1)
-      |> Enum.map(&(update_param(&1, params, fun, points, answers, alpha)))
+  def update_thetas(thetas, points, answers, alpha, tolerance, m) do
+    IO.inspect thetas
+    new_thetas = 0..(size(thetas) - 1)
+      |> Enum.map(&(update_theta(&1, thetas, points, answers, alpha, m)))
       |> list_to_tuple
-
-    if delta(new_params, params) < tolerance do
-      new_params
+    
+    sdiff = squared_diff(new_thetas, thetas)
+    IO.inspect sdiff
+    if sdiff < tolerance do
+      new_thetas
     else
-      run(new_params, fun, points, answers, alpha, tolerance)
+      update_thetas(new_thetas, points, answers, alpha, tolerance, m)
     end
   end
 
-  def update_param(index_j, params, fun, points, answers, alpha) do
-    param_j = elem(params, index_j)
-    param_j - alpha * sum_dc(param_j, index_j, params, fun, points, answers)
+  def update_theta(index_j, thetas, points, answers, alpha, m) do
+    theta_j = elem(thetas, index_j)
+    theta_j - alpha * gradient(theta_j, index_j, thetas, points, answers, m)
   end
 
-  defp delta(t1, t2),         do: delta(t1, t2, 0, size(t1), 0)
-  defp delta(_t1, _t2, i, s, sum) when i == s, do: sum
-  defp delta(t1, t2, i, s, sum) do
-    delta(t1, t2, i + 1, s, sum + abs(elem(t1, i) - elem(t2, i)))
+  def gradient(theta_j, index_j, thetas, points, answers, m) do
+    gradient(theta_j, index_j, thetas, points, answers, m, 0)
   end
 
-  def sum_dc(param_j, index_j, params, fun, points, answers) do
-    sum_dc(param_j, index_j, params, fun, points, answers, 0)
+  defp gradient(_theta_j, _index_j, _thetas, [], [], _m, sum), do: sum
+  defp gradient(theta_j, index_j, thetas, [p | points], [y | answers], m, sum) do
+    grad = (hypothesis(thetas, p) - y) * elem(p, index_j)
+    gradient(theta_j, index_j, thetas, points, answers, m, sum + (grad/m))
   end
 
-  defp sum_dc(_param_j, _index_j, _params, _fun, [], [], sum), do: sum
+  defp hypothesis(thetas, point) do
+    thetas |> Math.tdot_product(point)
+  end
 
-  defp sum_dc(param_j, index_j, params, fun, [p | points], [y | answers], sum) do
-    val = (fun.(params, p) - y) * elem(p, index_j)
-    result = sum + val
-    sum_dc(param_j, index_j, params, fun, points, answers, result)
+  defp squared_diff(t1, t2), do: squared_diff(t1, t2, 0, size(t1), 0)
+  defp squared_diff(_t1, _t2, i, s, sum) when i == s, do: (sum / s)
+  defp squared_diff(t1, t2, i, s, sum) do
+    squared_diff(t1, t2, i + 1, s, sum + :math.pow(  (elem(t1, i) - elem(t2, i)), 2))
   end
 
 end
