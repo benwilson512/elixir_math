@@ -1,5 +1,42 @@
 defmodule Math.Regression.GradientDescent do
 
+  @doc """
+  Computes a linear regression across an arbitrary number of features.
+  
+  @points: List of points, where each point is a tuple. Each
+    entry in the tuple represents some dimension. The first
+    member of every tuple must be a 1
+    IE [{1,1,3},{1,2,3},{1,3,4}]
+
+  @answers: A list containing the corresponding results that
+    operating on the set of points should produce
+
+  @alpha: The rate at which function changes the parameters
+    of the hypothesis (thetas). Should be smaller for a larger
+    number of points lest the algorithm go wildly out of control.
+    Defaults to 1 / length(points)^2.
+
+  @tolerance: How close the sum of the squared difference between
+    consecutive iterations of theta must be before the function
+    determines it has found the answer.
+
+  Returns: A tuple containing the values of theta
+
+  ## Examples
+
+    iex> Math.Regression.GradientDescent.run([{1,1},{1,2},{1,3}], [2,4,6])
+    {1.1387943346486253, 1.486898827903756}
+
+  """
+  def run(points, answers, alpha // nil, tolerance // 0.001) do
+    m = length(points)
+    if nil?(alpha) do
+      alpha = 1 / :math.pow(m, 2)
+    end
+    thetas = hd(points)
+    update_thetas(thetas, points, answers, alpha, tolerance, m)
+  end
+
   def update_thetas(thetas, points, answers, alpha, tolerance, m) do
     IO.inspect thetas
     new_thetas = 0..(size(thetas) - 1)
@@ -29,6 +66,7 @@ defmodule Math.Regression.GradientDescent do
     grad = (hypothesis(thetas, p) - y) * elem(p, index_j)
     gradient(theta_j, index_j, thetas, points, answers, m, sum + (grad/m))
   end
+
 
   defp hypothesis(thetas, point) do
     thetas |> Math.tdot_product(point)
