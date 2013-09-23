@@ -45,7 +45,7 @@ defmodule Math.Linear.GradientDescent do
       |> Enum.map(&(update_theta(&1, thetas, points, answers, alpha, m)))
       |> list_to_tuple
     
-    new_sdiff = squared_diff(new_thetas, thetas)
+    new_sdiff = Math.squared_diff(new_thetas, thetas)
 
     if new_sdiff > sdiff do
       IO.puts "Algorithm out of control!"
@@ -63,7 +63,6 @@ defmodule Math.Linear.GradientDescent do
     theta_j - (alpha / m) * gradient(theta_j, index_j, thetas, points, answers)
   end
 
-
   @doc """
     Computes the partial derivative of the cost function
     with respect to theta_j
@@ -78,15 +77,8 @@ defmodule Math.Linear.GradientDescent do
     gradient(theta_j, index_j, thetas, points, answers, sum + grad)
   end
 
-
   defp hypothesis(thetas, point) do
     thetas |> Math.tdot_product(point)
-  end
-
-  defp squared_diff(t1, t2), do: squared_diff(t1, t2, 0, size(t1), 0)
-  defp squared_diff(_t1, _t2, i, s, sum) when i == s, do: (sum / s)
-  defp squared_diff(t1, t2, i, s, sum) do
-    squared_diff(t1, t2, i + 1, s, sum + :math.pow((elem(t1, i) - elem(t2, i)), 2))
   end
 
 end

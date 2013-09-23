@@ -3,24 +3,24 @@ defmodule Math.Logistic.GradientDescent do
   @doc """
   Computes a linear regression across an arbitrary number of features.
   
-  @points: List of points, where each point is a tuple. Each
+  @param [List] points: List of points, where each point is a tuple. Each
     entry in the tuple represents some dimension. The first
     member of every tuple must be a 1
     IE [{1,1,3},{1,2,3},{1,3,4}]
 
-  @answers: A list containing the corresponding results that
+  @param [List] answers: A list containing the corresponding results that
     operating on the set of points should produce. Must be either 0 or 1
 
-  @alpha: The rate at which function changes the parameters
+  @param [Float] alpha: The rate at which function changes the parameters
     of the hypothesis (thetas). Should be smaller for a larger
     number of points lest the algorithm go wildly out of control.
-    Defaults to 1 / length(points)^2. Hand tuning recommended.
+    Defaults to 1 / length(points)^ 2. Hand tuning recommended.
 
-  @tolerance: How close the sum of the squared difference between
+  @param [Float] tolerance: How close the sum of the squared difference between
     consecutive iterations of theta must be before the function
     determines it has found the answer.
 
-  Returns: A tuple containing the values of theta
+  @returns: A tuple containing the values of theta
 
   ## Examples
 
@@ -45,7 +45,7 @@ defmodule Math.Logistic.GradientDescent do
       |> Enum.map(&(update_theta(&1, thetas, points, answers, alpha)))
       |> list_to_tuple
     
-    new_sdiff = squared_diff(new_thetas, thetas)
+    new_sdiff = Math.squared_diff(new_thetas, thetas)
 
     if new_sdiff > sdiff do
       IO.puts "Algorithm out of control!"
@@ -63,7 +63,6 @@ defmodule Math.Logistic.GradientDescent do
     theta_j - alpha * gradient(theta_j, index_j, thetas, points, answers)
   end
 
-
   @doc """
     Computes the partial derivative of the cost function
     with respect to theta_j
@@ -78,15 +77,8 @@ defmodule Math.Logistic.GradientDescent do
     gradient(theta_j, index_j, thetas, points, answers, sum + grad)
   end
 
-
   def hypothesis(thetas, point) do
     1 / (1 + :math.exp(-1 * Math.tdot_product(thetas, point)))
-  end
-
-  defp squared_diff(t1, t2), do: squared_diff(t1, t2, 0, size(t1), 0)
-  defp squared_diff(_t1, _t2, i, s, sum) when i == s, do: (sum / s)
-  defp squared_diff(t1, t2, i, s, sum) do
-    squared_diff(t1, t2, i + 1, s, sum + :math.pow((elem(t1, i) - elem(t2, i)), 2))
   end
 
 end

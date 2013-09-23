@@ -10,4 +10,10 @@ defmodule Math do
   def tdot_product(t1, t2, i, sum) do
     tdot_product(t1, t2, i + 1, sum + elem(t1, i) * elem(t2, i))
   end
+
+  def squared_diff(t1, t2), do: squared_diff(t1, t2, 0, size(t1), 0)
+  defp squared_diff(_t1, _t2, i, s, sum) when i == s, do: (sum / s)
+  defp squared_diff(t1, t2, i, s, sum) do
+    squared_diff(t1, t2, i + 1, s, sum + :math.pow((elem(t1, i) - elem(t2, i)), 2))
+  end
 end
