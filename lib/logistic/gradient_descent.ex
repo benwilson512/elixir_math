@@ -48,7 +48,7 @@ defmodule Math.Logistic.GradientDescent do
     new_sdiff = squared_diff(new_thetas, thetas)
 
     if new_sdiff > sdiff do
-      IO.puts "Algorithm out of contorl!"
+      IO.puts "Algorithm out of control!"
     else
       if new_sdiff < tolerance do
         new_thetas
