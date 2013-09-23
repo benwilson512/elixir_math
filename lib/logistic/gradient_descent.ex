@@ -1,6 +1,7 @@
 defmodule Math.Logistic.GradientDescent do
 
   @doc """
+  TODO: Make this documentation actually accurate
   Computes a linear regression across an arbitrary number of features.
   
   @param [List] points: List of points, where each point is a tuple. Each
