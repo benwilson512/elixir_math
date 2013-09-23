@@ -1,4 +1,4 @@
-defmodule Math.Linear.GradientDescent do
+defmodule Math.Logistic.GradientDescent do
 
   @doc """
   Computes a linear regression across an arbitrary number of features.
@@ -9,7 +9,7 @@ defmodule Math.Linear.GradientDescent do
     IE [{1,1,3},{1,2,3},{1,3,4}]
 
   @answers: A list containing the corresponding results that
-    operating on the set of points should produce
+    operating on the set of points should produce. Must be either 0 or 1
 
   @alpha: The rate at which function changes the parameters
     of the hypothesis (thetas). Should be smaller for a larger
@@ -25,10 +25,10 @@ defmodule Math.Linear.GradientDescent do
   ## Examples
 
     iex> Math.Linear.GradientDescent.run([{1,1},{1,2},{1,3}], [2,4,6])
-    {0.6830945381414766, 1.682866297760519}
+    {0.6830945381414767, 1.682866297760519}
 
   """
-  def run(points, answers, alpha // nil, tolerance // 0.001) do
+  def run(points, answers, alpha // nil, tolerance // 0.0001) do
     m = length(points)
     if nil?(alpha) do
       alpha = 1 / :math.pow(m, 2)
@@ -37,12 +37,12 @@ defmodule Math.Linear.GradientDescent do
       |> Enum.map(&(&1 * 0))
       |> list_to_tuple
 
-    update_thetas thetas, points, answers, alpha, tolerance, m
+    update_thetas(thetas, points, answers, alpha, tolerance)
   end
 
-  def update_thetas(thetas, points, answers, alpha, tolerance, m, sdiff // 1.0e300) do
+  def update_thetas(thetas, points, answers, alpha, tolerance, sdiff // 1.0e300) do
     new_thetas = 0..(size(thetas) - 1)
-      |> Enum.map(&(update_theta(&1, thetas, points, answers, alpha, m)))
+      |> Enum.map(&(update_theta(&1, thetas, points, answers, alpha)))
       |> list_to_tuple
     
     new_sdiff = squared_diff(new_thetas, thetas)
@@ -53,14 +53,14 @@ defmodule Math.Linear.GradientDescent do
       if new_sdiff < tolerance do
         new_thetas
       else
-        update_thetas(new_thetas, points, answers, alpha, tolerance, m, new_sdiff)
+        update_thetas(new_thetas, points, answers, alpha, tolerance, new_sdiff)
       end
     end
   end
 
-  def update_theta(index_j, thetas, points, answers, alpha, m) do
+  def update_theta(index_j, thetas, points, answers, alpha) do
     theta_j = elem(thetas, index_j)
-    theta_j - (alpha / m) * gradient(theta_j, index_j, thetas, points, answers)
+    theta_j - alpha * gradient(theta_j, index_j, thetas, points, answers)
   end
 
 
@@ -79,8 +79,8 @@ defmodule Math.Linear.GradientDescent do
   end
 
 
-  defp hypothesis(thetas, point) do
-    thetas |> Math.tdot_product(point)
+  def hypothesis(thetas, point) do
+    1 / (1 + :math.exp(-1 * Math.tdot_product(thetas, point)))
   end
 
   defp squared_diff(t1, t2), do: squared_diff(t1, t2, 0, size(t1), 0)

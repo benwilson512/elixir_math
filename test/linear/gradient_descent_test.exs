@@ -1,61 +1,58 @@
 # points = [{1,1},{1,2},{1,3},{1,4},{1,5}]
 # answers = [2,4,6,8,10]
-# Math.Regression.GradientDescent.run(points, answers)
+# Math.Linear.GradientDescent.run(points, answers)
 
-defmodule GradientDescentTest do
+defmodule Linear.GradientDescentTest do
   use ExUnit.Case
 
-  import Math.Regression.GradientDescent, only: [
-    gradient: 6,
+  import Math.Linear.GradientDescent, only: [
+    gradient: 5,
     update_theta: 6,
     run: 4
   ]
 
-  doctest Math.Regression.GradientDescent
+  doctest Math.Linear.GradientDescent
 
   test "gradient should be zero when theta is exactly right" do
     thetas = {0, 2}
     points = [{1,1},{1,2},{1,3},{1,4}]
     answers = [2,4,6,8]
-    m = length(points)
     # Gradient first theta
     index_0 = 0
     theta_0 = elem(thetas, index_0)
-    assert gradient(theta_0, index_0, thetas, points, answers, m) == 0
+    assert gradient(theta_0, index_0, thetas, points, answers) == 0
     # Gradient second theta
     index_1 = 1
     theta_1 = elem(thetas, index_1)
-    assert gradient(theta_1, index_1, thetas, points, answers, m) == 0
+    assert gradient(theta_1, index_1, thetas, points, answers) == 0
   end
 
   test "gradient should be negative when theta is too small" do
     thetas = {0, 0}        # Slope of 0
     points = [{1,1},{1,5}] # Slope of 1
     answers = [1,5]
-    m = length(points)
     # Gradient first theta
     index_0 = 0
     theta_0 = elem(thetas, index_0)
-    assert gradient(theta_0, index_0, thetas, points, answers, m) < 0
+    assert gradient(theta_0, index_0, thetas, points, answers) < 0
     # Gradient second theta
     index_1 = 1
     theta_1 = elem(thetas, index_1)
-    assert gradient(theta_1, index_1, thetas, points, answers, m) < 0
+    assert gradient(theta_1, index_1, thetas, points, answers) < 0
   end
 
   test "gradient should be positive when theta is too large" do
     thetas = {0, 3}        # Slope of 3
     points = [{1,1},{1,2}] # Slope of 1
     answers = [1,2]
-    m = length(points)
     # Gradient first theta
     index_0 = 0
     theta_0 = elem(thetas, index_0)
-    assert gradient(theta_0, index_0, thetas, points, answers, m) > 0
+    assert gradient(theta_0, index_0, thetas, points, answers) > 0
     # Gradient second theta
     index_1 = 1
     theta_1 = elem(thetas, index_1)
-    assert gradient(theta_1, index_1, thetas, points, answers, m) > 0
+    assert gradient(theta_1, index_1, thetas, points, answers) > 0
   end
 
   test "update_theta should be unchanged for correct thetas" do
@@ -95,7 +92,7 @@ defmodule GradientDescentTest do
     answers = [2,4,6]
     alpha = 0.1
     tolerance = 0.001
-    assert run(points, answers, alpha, tolerance) == {0.6809901234567902, 1.6653922633744855}
+    assert run(points, answers, alpha, tolerance) == {0.6809901234567901, 1.6653922633744855}
   end
 
   # test "run handles large numbers" do
